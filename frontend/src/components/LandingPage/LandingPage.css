@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+
+}
+
+.LandingPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Bebas Neue', 'Courier';
+    gap: 120px;
+    height: 100%;
+    background: rgb(63, 94, 251);
+    background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(137, 85, 195, 1) 39%, rgba(252, 70, 107, 1) 100%);
+    color: #F7F7FA
+}
+
+.Header {
+    font-size: 8em;
+
+}
+
+.Subtext {
+    font-size: 2em;
+}
+
+.Login {
+    height: 10%;
+    width: 20%;
+}
+
+.Login button {
+    padding: 2%;
+    height: 100%;
+    width: 100%;
+    font-size: large;
+    font-family: 'Bebas Neue';
+    background: rgb(247, 247, 250);
+    background: linear-gradient(198deg, rgba(247, 247, 250, 1) 5%, rgba(30, 215, 96, 1) 50%);
+    border-radius: 25px;
+    border: 2px solid #F7F7FA;
+    cursor: pointer
+}
