@@ -8,18 +8,15 @@ import { createContext } from 'react';
 export const AppContext = createContext();
 
 function App() {
-  const [userToken, setUserToken] = useState(null);
 
   return (
     <div className="App">
-      <AppContext.Provider value={{userToken, setUserToken}}>
       <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage/>}/>
         <Route path="/shuffler" element={<Shuffler/>}/>
       </Routes>
       </BrowserRouter>
-      </AppContext.Provider>
     </div>
   );
 }

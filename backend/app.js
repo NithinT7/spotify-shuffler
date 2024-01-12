@@ -84,6 +84,46 @@ app.get('/playback', (req, res) => {
     });
 });
 
+app.get('/getTracks', (req, res) => {
+    const playlistId = req.query.playlistId;
+    const token = req.query.token;
+    axios.get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
+    .then(response => {
+        res.send(response.data);
+    })
+    .catch(err => {
+        res.send(err);
+    });
+}
+);
+
+app.post('/addQueue', async (req, res) => {
+    const songs = req.body.songs;
+    const token = req.body.token;
+
+    try {
+        const promises = songs.map(song => {
+            const songUri = "spotify:track:" + song;
+            return axios.post('https://api.spotify.com/v1/me/player/queue?uri=' + encodeURIComponent(songUri), {}, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+        });
+
+        await Promise.all(promises);
+        res.send("Success");
+    } catch (error) {
+        console.error("Error adding to queue: ", error);
+        res.status(500).send("Error adding songs to the queue");
+    }
+});
+
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
