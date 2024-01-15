@@ -1,36 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Box from '@mui/material/Box';
-import './Shuffler.css';
-import { Button } from '@mui/material';
 
 const Shuffler = () => {
   const [userToken, setUserToken] = useState(null);
   const [playlist, setPlaylist] = useState('');
   const [songs, setSongs] = useState([]);
-  const [isListening, setIsListening] = useState(false);
-  const [isDoneShuffling, setIsDoneShuffling] = useState(false);
+  const [isListening, setIsListening] = useState(true);
+  const [isDoneShuffling, setIsDoneShuffling] = useState(true);
 
-  useEffect(() => {
-    const fetchTokenAndPlayBack = async () => {
-      try {
-        if (!userToken) {
-          const code = new URL(window.location.href).searchParams.get('code');
-          const { data } = await axios.get(`http://localhost:4000/token?code=${code}`);
-          setUserToken(data.access_token);
+  const fetchTokenAndPlayBack = async () => {
+    try {
+      if (localStorage.getItem('token') && localStorage.getItem('token') !== 'undefined') {
+        setUserToken(localStorage.getItem('token'));
 
-          const playbackResponse = await axios.get(`http://localhost:4000/playback?token=${data.access_token}`);
-          setIsListening(true);
-          handlePlaylist(playbackResponse.data, data.access_token);
-        }
-      } catch (error) {
-        console.error(error);
-        setIsListening(false);
+        const playbackResponse = await axios.get(`http://localhost:4000/playback?token=${localStorage.getItem('token')}`);
+        console.log(playbackResponse.data)
+        setIsListening(true);
+        handlePlaylist(playbackResponse.data, localStorage.getItem('token'));
       }
-    };
+      else if (!userToken) {
+        const code = new URL(window.location.href).searchParams.get('code');
+        const { data } = await axios.get(`http://localhost:4000/token?code=${code}`);
+        setUserToken(data.access_token);
+        localStorage.setItem('token', data.access_token);
 
-    fetchTokenAndPlayBack();
-  }, [userToken]);
+      }
+      else {
+        const playbackResponse = await (await axios.get(`http://localhost:4000/playback?token=${userToken}`));
+        console.log(userToken);
+        setIsListening(true);
+        handlePlaylist(playbackResponse.data, userToken);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsListening(false);
+      setTimeout(() => {
+        setIsListening(true);
+      }, [5000]);
+    }
+  };
 
   const handlePlaylist = async (playbackData, accessToken) => {
     if (playbackData && playbackData.context && playbackData.context.type === 'playlist') {
@@ -38,12 +46,12 @@ const Shuffler = () => {
       setPlaylist(playlistId);
 
       try {
+        setIsDoneShuffling(false);
         const { data } = await axios.get(`http://localhost:4000/getTracks?playlistId=${playlistId}&token=${accessToken}`);
         const trackUris = data.items.map(item => item.track.uri.split(':')[2]);
         setSongs(trackUris);
 
         const shuffledSongs = shuffle(trackUris);
-        setIsDoneShuffling(false);
         await axios.post('http://localhost:4000/addQueue', {
           token: accessToken,
           songs: shuffledSongs
@@ -52,6 +60,12 @@ const Shuffler = () => {
       } catch (error) {
         console.error(error);
       }
+    }
+    else {
+      setIsListening(false);
+      setTimeout(() => {
+        setIsListening(true);
+      }, [5000]);
     }
   };
 
@@ -67,24 +81,36 @@ const Shuffler = () => {
   };
 
   return (
-    <div className='Shuffler'>
-      <div className='Shuffler-header'>
-        <Box display="flex" sx={{ width: '100%', backgroundColor: '#1DB954', borderRadius: '30px', height: '50%', alignItems: "center", justifyContent: 'center' }}>
-          <h1>Spotify Shuffler</h1>
-        </Box>
+    <div className='w-full h-full flex flex-col font-sans justify-evenly items-center bg-spotifyBlack'>
+      <div className='flex flex-col items-center justify-center h-1/4 bg-spotifyGreen w-4/5 mt-4 rounded-2xl'>
+        <div className='text-3xl text-spotifyWhite '>
+          <h1 className='font-bold'>Shuffle Your Spotify</h1>
+        </div>
       </div>
-      <div className="Instructions">
-        <Box display="flex" sx={{ width: '100%', backgroundColor: '#1DB954', borderRadius: '30px', height: '50%', justifyContent: "center", flexDirection: "column" }}>
-          <h2 >Instructions:</h2>
-          <ol>1. Play a playlist on Spotify</ol>
-          <ol>2. Click the shuffle button on this page</ol>
-          <ol>3. Enjoy!</ol>
-          <b6>The shuffled songs will be added to the queue, to reshuffle make sure to clear the queue in the app and click shuffle again</b6>
-        </Box>
+      <div className='flex flex-col items-center justify-center h-1/4 bg-spotifyGreen w-4/5 mt-4 rounded-2xl'>
+        <div className='text-3xl text-spotifyWhite text-center'>
+          <h1 className='font-bold'>Instructions:</h1>
+          <p className='font-medium text-base my-1'>1. Open Spotify on your phone or computer</p>
+          <p className='font-medium text-base my-1'>2. Play a playlist <span className='font-thin text-xs italic'>Can't be an album or liked songs</span></p>
+          <p className='font-medium text-base my-1'>3. Click the shuffle button below on this page <span className='font-thin text-xs italic'>Shuffled songs are added to queue</span></p>
+          <p className='font-medium text-base my-1'>4. Enjoy! <span className='font-thin text-xs italic'>For shuffle to work intentionally make sure your queue is clear</span></p>
+        </div>
       </div>
-      <div className= 'Shuffler-button'>
-        <Button variant="contained" onClick={() => handlePlaylist(playlist, userToken)} disabled={!isListening || isDoneShuffling} sx={{ width: '100%', backgroundColor: '#1DB954', borderRadius: '30px', height: '50%', alignItems: "center", justifyContent: 'center' }}/>
+      <div className='flex flex-col items-center justify-center h-1/4 bg-spotifyGreen w-4/5 mt-4 rounded-2xl'>
+        <p className={`text-spotifyWhite text-center font-medium text-base my-1 ${isListening ? 'hidden' : ''}`}>
+          Please play a playlist on Spotify
+        </p>
+        <p className={`text-spotifyWhite text-center font-medium text-base my-1 ${isDoneShuffling ? 'hidden' : ''}`}>
+          Shuffling...
+        </p>
+        <button
+          className='bg-spotifyBlack text-spotifyWhite font-bold py-2 px-4 rounded-full h-3/4 w-1/2'
+          onClick={fetchTokenAndPlayBack}
+        >
+          Shuffle
+        </button>
       </div>
+
     </div>
   );
 };

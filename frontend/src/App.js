@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from './components/LandingPage/LandingPage';
 import Shuffler from './components/Shuffler/Shuffler';
@@ -10,7 +9,7 @@ export const AppContext = createContext();
 function App() {
 
   return (
-    <div className="App">
+    <div className="w-full h-screen ">
       <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage/>}/>
