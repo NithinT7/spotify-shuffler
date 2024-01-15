@@ -105,23 +105,38 @@ app.post('/addQueue', async (req, res) => {
     const songs = req.body.songs;
     const token = req.body.token;
 
-    try {
-        const promises = songs.map(song => {
-            const songUri = "spotify:track:" + song;
-            return axios.post('https://api.spotify.com/v1/me/player/queue?uri=' + encodeURIComponent(songUri), {}, {
+    const delay = (duration) => new Promise(resolve => setTimeout(resolve, duration));
+
+    const addSongToQueue = async (song, retryCount = 0) => {
+        const songUri = "spotify:track:" + song;
+        try {
+            await axios.post('https://api.spotify.com/v1/me/player/queue?uri=' + encodeURIComponent(songUri), {}, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-        });
+            await delay(100);
+        } catch (error) {
+            if (retryCount < 3 && error.response && error.response.status === 429) {
+                const retryAfter = parseInt(error.response.headers['retry-after']) * 1000 || 3000;
+                await delay(retryAfter);
+                return addSongToQueue(song, retryCount + 1);
+            }
+            throw error;
+        }
+    };
 
-        await Promise.all(promises);
+    try {
+        for (const song of songs) {
+            await addSongToQueue(song);
+        }
         res.send("Success");
     } catch (error) {
         console.error("Error adding to queue: ", error);
         res.status(500).send("Error adding songs to the queue");
     }
 });
+
 
 
 
