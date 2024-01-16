@@ -14,20 +14,18 @@ const Shuffler = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [countdown, setCountdown] = useState(20);
 
-  const handleButtonClick = () => {
-    setIsButtonDisabled(true);
-    setCountdown(20);
-    const interval = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1);
-    }, 1000);
 
-    setTimeout(() => {
-      clearInterval(interval);
+  useEffect(() => {
+    if ((isButtonDisabled) && (countdown > 0)) {
+      setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+    }
+    if (countdown === 0) {
       setIsButtonDisabled(false);
-    }, 20000);
-
-    fetchTokenAndPlayBack();
-  };
+      setCountdown(20);
+    }
+  }, [countdown,isButtonDisabled]);
 
 
 
@@ -87,7 +85,10 @@ const Shuffler = () => {
           token: accessToken,
           songs: shuffledSongs
         })
-          .then(setIsDoneShuffling(true));
+          .then(
+            setIsDoneShuffling(true),
+            setIsButtonDisabled(true),
+          );
       } catch (error) {
         console.error(error);
       }
@@ -138,7 +139,7 @@ const Shuffler = () => {
         </p>
         <button
           className='bg-spotifyBlack text-spotifyWhite font-bold py-2 px-4 rounded-full h-3/4 w-1/2 hover:bg-opacity-95 hover:text-spotifyGreen md:text-2xl'
-          onClick={handleButtonClick}
+          onClick={fetchTokenAndPlayBack}
           disabled={isButtonDisabled}
         >
           {isButtonDisabled ? 'Disabled for ' + countdown  +'s': 'Shuffle'}
