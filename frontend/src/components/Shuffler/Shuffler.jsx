@@ -84,7 +84,7 @@ const Shuffler = () => {
     <div className='w-full h-full flex flex-col font-sans justify-evenly items-center bg-spotifyBlack overflow-auto'>
       <div className='flex flex-col items-center justify-center h-1/4 bg-spotifyGreen w-4/5 mt-4 rounded-2xl min-h-233 overflow-auto'>
         <div className='text-spotifyWhite '>
-          <h1 className='font-bold text-xl sm:text-3xl'>Shuffle Your Spotify</h1>
+          <h1 className='font-bold text-xl sm:text-3xl'>Shuffle Your Playlist!</h1>
         </div>
       </div>
       <div className='flex flex-col items-center justify-center bg-spotifyGreen w-4/5 my-4 rounded-2xl p-4 overflow-auto'>
