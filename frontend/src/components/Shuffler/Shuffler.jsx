@@ -7,26 +7,27 @@ const Shuffler = () => {
   const [songs, setSongs] = useState([]);
   const [isListening, setIsListening] = useState(true);
   const [isDoneShuffling, setIsDoneShuffling] = useState(true);
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const fetchTokenAndPlayBack = async () => {
     try {
       if (localStorage.getItem('token') && localStorage.getItem('token') !== 'undefined') {
         setUserToken(localStorage.getItem('token'));
 
-        const playbackResponse = await axios.get(`http://localhost:4000/playback?token=${localStorage.getItem('token')}`);
+        const playbackResponse = await axios.get(`${API_URL}/playback?token=${localStorage.getItem('token')}`);
         console.log(playbackResponse.data)
         setIsListening(true);
         handlePlaylist(playbackResponse.data, localStorage.getItem('token'));
       }
       else if (!userToken) {
         const code = new URL(window.location.href).searchParams.get('code');
-        const { data } = await axios.get(`http://localhost:4000/token?code=${code}`);
+        const { data } = await axios.get(`${API_URL}/token?code=${code}`);
         setUserToken(data.access_token);
         localStorage.setItem('token', data.access_token);
 
       }
       else {
-        const playbackResponse = await (await axios.get(`http://localhost:4000/playback?token=${userToken}`));
+        const playbackResponse = await (await axios.get(`${API_URL}/playback?token=${userToken}`));
         console.log(userToken);
         setIsListening(true);
         handlePlaylist(playbackResponse.data, userToken);
@@ -47,12 +48,12 @@ const Shuffler = () => {
 
       try {
         setIsDoneShuffling(false);
-        const { data } = await axios.get(`http://localhost:4000/getTracks?playlistId=${playlistId}&token=${accessToken}`);
+        const { data } = await axios.get(`${API_URL}/getTracks?playlistId=${playlistId}&token=${accessToken}`);
         const trackUris = data.items.map(item => item.track.uri.split(':')[2]);
         setSongs(trackUris);
 
         const shuffledSongs = shuffle(trackUris);
-        await axios.post('http://localhost:4000/addQueue', {
+        await axios.post(`${API_URL}/addQueue`, {
           token: accessToken,
           songs: shuffledSongs
         })

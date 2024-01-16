@@ -6,9 +6,10 @@ import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const handleLogin = () => {
-      axios.get('http://localhost:4000/login').then((res) => {
+      axios.get(`${API_URL}/login`).then((res) => {
           window.location = res.data;
       });
   };
