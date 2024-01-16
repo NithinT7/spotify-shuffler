@@ -15,7 +15,6 @@ const Shuffler = () => {
         setUserToken(localStorage.getItem('token'));
 
         const playbackResponse = await axios.get(`${API_URL}/playback?token=${localStorage.getItem('token')}`);
-        console.log(playbackResponse.data)
         setIsListening(true);
         handlePlaylist(playbackResponse.data, localStorage.getItem('token'));
       }
@@ -28,7 +27,6 @@ const Shuffler = () => {
       }
       else {
         const playbackResponse = await (await axios.get(`${API_URL}/playback?token=${userToken}`));
-        console.log(userToken);
         setIsListening(true);
         handlePlaylist(playbackResponse.data, userToken);
       }
