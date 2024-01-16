@@ -9,7 +9,7 @@ export const AppContext = createContext();
 function App() {
 
   return (
-    <div className="w-full h-screen ">
+    <div className="w-full h-screen">
       <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage/>}/>

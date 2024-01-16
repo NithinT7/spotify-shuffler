@@ -15,8 +15,8 @@ export const Login = () => {
   
 
   return (
-    <div className='Login'>
-      <button onClick={handleLogin}>Login With Spotify</button>
+    <div className='w-1/2 h-1/6 flex align-center justify-center'>
+      <button className='bg-spotifyGreen text-spotifyWhite font-bold py-2 px-4 rounded-full h-3/4 w-3/4 hover:bg-opacity-95 hover:text-spotifyBlack p-96"' onClick={handleLogin}>Login With Spotify</button>
     </div>
     );
   }
