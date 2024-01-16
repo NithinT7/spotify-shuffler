@@ -48,7 +48,6 @@ const Shuffler = () => {
       if (!token || token === 'undefined') {
         const code = new URL(window.location.href).searchParams.get('code');
         const { data } = await axios.get(`${API_URL}/token?code=${code}`);
-        console.log(data);
         token = data.access_token;
         let time = new Date().getTime();
         localStorage.setItem('token', token);
@@ -61,7 +60,6 @@ const Shuffler = () => {
       setUserToken(token);
 
       const playbackResponse = await axios.get(`${API_URL}/playback?token=${token}`);
-      console.log(playbackResponse.data);
       setIsListening(true);
       handlePlaylist(playbackResponse.data, token);
     } catch (error) {
@@ -118,6 +116,7 @@ const Shuffler = () => {
       <div className='flex flex-col items-center justify-center h-1/4 bg-spotifyGreen w-4/5 mt-4 rounded-2xl min-h-233 overflow-auto'>
         <div className='text-spotifyWhite '>
           <h1 className='font-bold text-xl sm:text-3xl'>Shuffle Your Playlist!</h1>
+          <p className='font-medium text-sm'>For Spotify Premium Members</p>
         </div>
       </div>
       <div className='flex flex-col items-center justify-center bg-spotifyGreen w-4/5 my-4 rounded-2xl p-4 overflow-auto'>
