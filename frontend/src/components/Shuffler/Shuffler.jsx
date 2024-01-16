@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Shuffler = () => {
   const [userToken, setUserToken] = useState(null);
@@ -8,34 +9,67 @@ const Shuffler = () => {
   const [isListening, setIsListening] = useState(true);
   const [isDoneShuffling, setIsDoneShuffling] = useState(true);
   const API_URL = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
+
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [countdown, setCountdown] = useState(20);
+
+  const handleButtonClick = () => {
+    setIsButtonDisabled(true);
+    setCountdown(20);
+    const interval = setInterval(() => {
+      setCountdown((prevCountdown) => prevCountdown - 1);
+    }, 1000);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      setIsButtonDisabled(false);
+    }, 20000);
+
+    fetchTokenAndPlayBack();
+  };
+
+
+
+  const isTokenExpired = (token) => {
+    let time = localStorage.getItem('time');
+    const currentTime = new Date().getTime();
+    if (currentTime - time > 3600000) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('time');
+      return true;
+    }
+  };
 
   const fetchTokenAndPlayBack = async () => {
     try {
-      if (localStorage.getItem('token') && localStorage.getItem('token') !== 'undefined') {
-        setUserToken(localStorage.getItem('token'));
+      let token = localStorage.getItem('token');
 
-        const playbackResponse = await axios.get(`${API_URL}/playback?token=${localStorage.getItem('token')}`);
-        setIsListening(true);
-        handlePlaylist(playbackResponse.data, localStorage.getItem('token'));
-      }
-      else if (!userToken) {
+      if (!token || token === 'undefined') {
         const code = new URL(window.location.href).searchParams.get('code');
         const { data } = await axios.get(`${API_URL}/token?code=${code}`);
-        setUserToken(data.access_token);
-        localStorage.setItem('token', data.access_token);
+        console.log(data);
+        token = data.access_token;
+        let time = new Date().getTime();
+        localStorage.setItem('token', token);
+        localStorage.setItem('time', time);
+      }
+      if (isTokenExpired(token)) {
+        navigate('/');
+      }
 
-      }
-      else {
-        const playbackResponse = await (await axios.get(`${API_URL}/playback?token=${userToken}`));
-        setIsListening(true);
-        handlePlaylist(playbackResponse.data, userToken);
-      }
+      setUserToken(token);
+
+      const playbackResponse = await axios.get(`${API_URL}/playback?token=${token}`);
+      console.log(playbackResponse.data);
+      setIsListening(true);
+      handlePlaylist(playbackResponse.data, token);
     } catch (error) {
       console.error(error);
       setIsListening(false);
       setTimeout(() => {
         setIsListening(true);
-      }, [5000]);
+      }, 5000);
     }
   };
 
@@ -105,10 +139,10 @@ const Shuffler = () => {
         </p>
         <button
           className='bg-spotifyBlack text-spotifyWhite font-bold py-2 px-4 rounded-full h-3/4 w-1/2 hover:bg-opacity-95 hover:text-spotifyGreen md:text-2xl'
-          onClick={fetchTokenAndPlayBack}
-          
+          onClick={handleButtonClick}
+          disabled={isButtonDisabled}
         >
-          Shuffle
+          {isButtonDisabled ? 'Disabled for ' + countdown  +'s': 'Shuffle'}
         </button>
       </div>
 

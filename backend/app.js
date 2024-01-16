@@ -21,8 +21,8 @@ app.get('/', (req, res) => {
 );
 
 
-const REDIRECT_URI = 'https://shufflplay.com/shuffler'; // Your Redirect URI
-
+const REDIRECT_URI = 'https://shufflplay.com/shuffler';
+//const REDIRECT_URI = 'http://localhost:3000/shuffler'
 function generateRandomString(length) {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -36,7 +36,7 @@ app.get('/login', (req, res) => {
   const state = generateRandomString(16);
   const scope = 'user-read-private user-read-email user-read-playback-state user-modify-playback-state';
 
-  // Constructing the Spotify URL for authorization
+
   const spotifyAuthUrl = 'https://accounts.spotify.com/authorize?' + 
     querystring.stringify({
       response_type: 'code',

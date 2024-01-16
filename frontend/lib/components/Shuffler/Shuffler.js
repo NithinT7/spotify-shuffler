@@ -21,7 +21,6 @@ const Shuffler = () => {
       if (localStorage.getItem('token') && localStorage.getItem('token') !== 'undefined') {
         setUserToken(localStorage.getItem('token'));
         const playbackResponse = await _axios.default.get("".concat(API_URL, "/playback?token=").concat(localStorage.getItem('token')));
-        console.log(playbackResponse.data);
         setIsListening(true);
         handlePlaylist(playbackResponse.data, localStorage.getItem('token'));
       } else if (!userToken) {
@@ -33,7 +32,6 @@ const Shuffler = () => {
         localStorage.setItem('token', data.access_token);
       } else {
         const playbackResponse = await await _axios.default.get("".concat(API_URL, "/playback?token=").concat(userToken));
-        console.log(userToken);
         setIsListening(true);
         handlePlaylist(playbackResponse.data, userToken);
       }
