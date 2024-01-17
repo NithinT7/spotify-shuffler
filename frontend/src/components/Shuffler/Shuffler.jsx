@@ -114,7 +114,7 @@ const Shuffler = () => {
 
   return (
     <div className='w-full h-full flex flex-col font-sans justify-evenly items-center bg-spotifyBlack overflow-auto'>
-      <div className='flex flex-col items-center justify-center h-1/4 bg-spotifyGreen w-4/5 mt-4 rounded-2xl min-h-233 overflow-auto'>
+      <div className='flex flex-col items-center justify-center h-1/4 bg-spotifyGreen w-4/5 rounded-2xl min-h-233 overflow-auto mt-20 md:mt-4'>
         <div className='text-spotifyWhite '>
           <h1 className='font-bold text-xl sm:text-3xl'>Shuffle Your Playlist!</h1>
           <p className='font-medium text-sm'>For Spotify Premium Members</p>
@@ -130,7 +130,7 @@ const Shuffler = () => {
           <span className='font-thin text-xs italic'>Unfortunately due to Spotify limiting the size of a queue only 50 songs in your playlist can be shuffled at a time</span>
         </div>
       </div>
-      <div className='flex flex-col items-center justify-center h-1/4 bg-spotifyGreen w-4/5 mt-4 rounded-2xl min-h-233 overflow-auto'>
+      <div className='flex flex-col items-center justify-center h-1/4 bg-spotifyGreen w-4/5  rounded-2xl min-h-233 overflow-auto mb-20 md:mb-4'>
         <p className={`text-spotifyWhite text-center font-medium text-base my-1 ${isListening ? 'hidden' : ''}`}>
           Please play a playlist on Spotify
         </p>
