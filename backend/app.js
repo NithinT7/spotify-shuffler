@@ -21,8 +21,8 @@ app.get('/', (req, res) => {
 );
 
 
-const REDIRECT_URI = 'https://shufflplay.com/shuffler';
-//const REDIRECT_URI = 'http://localhost:3000/shuffler'
+//const REDIRECT_URI = 'https://shufflplay.com/shuffler';
+const REDIRECT_URI = 'http://localhost:3000/shuffler'
 function generateRandomString(length) {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

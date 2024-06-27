@@ -25,7 +25,7 @@ const Shuffler = () => {
       setIsButtonDisabled(false);
       setCountdown(20);
     }
-  }, [countdown,isButtonDisabled]);
+  }, [countdown, isButtonDisabled]);
 
 
 
@@ -130,21 +130,28 @@ const Shuffler = () => {
           <span className='font-thin text-xs italic'>Unfortunately due to Spotify limiting the size of a queue only 50 songs in your playlist can be shuffled at a time</span>
         </div>
       </div>
-      <div className='flex flex-col items-center justify-center h-1/4 bg-spotifyGreen w-4/5  rounded-2xl min-h-233 overflow-auto mb-20 md:mb-4'>
-        <p className={`text-spotifyWhite text-center font-medium text-base my-1 ${isListening ? 'hidden' : ''}`}>
-          Please play a playlist on Spotify
-        </p>
-        <p className={`text-spotifyWhite text-center font-medium text-base my-1 ${isDoneShuffling ? 'hidden' : ''}`}>
-          Shuffling...
-        </p>
+      <div className='flex flex-col items-center justify-center h-1/4 bg-spotifyBlack w-4/5 rounded-2xl min-h-233 overflow-auto mb-20 md:mb-4'>
+        <div className="flex flex-col items-center justify-center h-1/2">
+          <p className={`text-spotifyWhite text-center font-medium text-base my-1 ${isListening ? 'hidden' : ''}`}>
+            Please play a playlist on Spotify
+          </p>
+          <p className={`text-spotifyWhite text-center font-medium text-base my-1 ${isDoneShuffling ? 'hidden' : ''}`}>
+            Shuffling...
+          </p>
+          <p className='text-spotifyWhite text-center font-medium text-base my-1 invisible'>
+            Shuffling...
+          </p>
+        </div>
         <button
-          className='bg-spotifyBlack text-spotifyWhite font-bold py-2 px-4 rounded-full h-3/4 w-1/2 hover:bg-opacity-95 hover:text-spotifyGreen md:text-2xl'
+          className='bg-spotifyGreen text-spotifyWhite font-bold py-2 px-4 rounded-full h-full w-1/2 hover:bg-opacity-95 hover:text-spotifyWhite md:text-2xl'
           onClick={fetchTokenAndPlayBack}
           disabled={isButtonDisabled}
         >
-          {isButtonDisabled ? 'Disabled for ' + countdown  +'s': 'Shuffle'}
+          {isButtonDisabled ? 'Disabled for ' + countdown + 's' : 'Shuffle'}
         </button>
       </div>
+
+
 
     </div>
   );
